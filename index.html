@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Generador Kino Responsivo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador Números Kino</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -11,78 +11,72 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 10px;
-            margin: 0;
+            padding: 20px;
         }
 
         .container {
             background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            width: 95%;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             max-width: 1000px;
-            margin: 10px;
-            box-sizing: border-box;
+            margin: 20px;
+            width: 95%;
         }
 
         .numbers-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
-            gap: 8px;
-            margin: 15px 0;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin: 25px 0;
         }
 
         .number-card {
             background: #4a90e2;
             color: white;
-            padding: 12px;
-            border-radius: 6px;
+            padding: 15px;
+            border-radius: 8px;
             text-align: center;
             font-weight: bold;
-            font-size: 0.9em;
-            min-width: 40px;
+            font-size: 1.1em;
         }
 
         button {
             background: #27ae60;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
+            padding: 12px 25px;
+            border-radius: 8px;
             cursor: pointer;
             transition: background 0.3s;
-            margin: 10px 0;
+            margin: 15px 0;
             width: 100%;
-            font-size: 1em;
         }
 
         .validation-panel {
             background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
         }
 
         .validation-item {
             display: flex;
             align-items: center;
-            margin: 8px 0;
-            padding: 8px;
+            margin: 10px 0;
+            padding: 10px;
             background: white;
-            border-radius: 6px;
-            font-size: 0.9em;
+            border-radius: 8px;
         }
 
         .check-icon {
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 10px;
-            flex-shrink: 0;
+            margin-right: 15px;
         }
 
         .valid {
@@ -95,32 +89,27 @@
             color: #c62828;
         }
 
-        .pattern-table-container {
-            overflow-x: auto;
-            margin: 15px 0;
-        }
-
         .pattern-table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 25px;
             background: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            min-width: 600px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            overflow-x: auto;
+            display: block;
         }
 
         .pattern-table th, .pattern-table td {
             border: 1px solid #ddd;
-            padding: 6px;
+            padding: 8px;
             text-align: center;
-            min-width: 30px;
+            min-width: 35px;
             position: relative;
-            font-size: 0.8em;
         }
 
         .pattern-table th {
             background: #34495e;
             color: white;
-            font-size: 0.9em;
         }
 
         .highlight {
@@ -131,41 +120,63 @@
         .highlight::after {
             content: "✔";
             color: #2e7d32;
-            font-size: 0.7em;
+            font-size: 0.8em;
             position: absolute;
-            right: 1px;
-            top: 1px;
+            right: 2px;
+            top: 2px;
         }
 
-        h1 {
-            font-size: 1.5em;
-            text-align: center;
-            margin: 10px 0;
-        }
-
-        h2, h3 {
-            font-size: 1.2em;
-            margin: 10px 0;
-        }
-
-        @media (min-width: 768px) {
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .numbers-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
             .container {
-                padding: 25px;
-            }
-            .number-card {
                 padding: 15px;
-                font-size: 1.1em;
+                margin: 10px;
             }
-            button {
-                padding: 12px 25px;
-                width: auto;
-            }
-            .validation-item {
+            
+            .number-card {
+                padding: 10px;
                 font-size: 1em;
             }
-            .pattern-table th, .pattern-table td {
+            
+            .validation-item span {
                 font-size: 0.9em;
-                padding: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .numbers-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+                text-align: center;
+            }
+            
+            h2, h3 {
+                font-size: 1.2em;
+            }
+            
+            .check-icon {
+                margin-right: 10px;
+            }
+            
+            .pattern-table {
+                font-size: 0.8em;
+            }
+            
+            button {
+                padding: 12px;
+                font-size: 0.9em;
             }
         }
     </style>
@@ -176,6 +187,7 @@
         <button onclick="generateNewCombination()">Generar Combinación</button>
         <div class="numbers-grid" id="numbersGrid"></div>
 
+        <!-- Panel de validación -->
         <div class="validation-panel">
             <h2>Validación de Criterios</h2>
             <div class="validation-item" data-criterion="fixed">
@@ -204,9 +216,10 @@
             </div>
         </div>
 
-        <h2>Patrones Estadísticos</h2>
-        <h3>Distribución en forma de "U"</h3>
-        <div class="pattern-table-container">
+        <!-- Tabla de patrones -->
+        <h2>Patrones Estadísticos Personalizados</h2>
+        <h3>Lo ideal es que se genere una especie de "U" con los números</h3>
+        <div class="pattern-table-wrapper">
             <table class="pattern-table">
                 <thead>
                     <tr>
@@ -217,15 +230,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                <tr><td>1</td><td>1</td><td>2</td><td>4</td><td>6</td><td>8</td><td>9</td><td>12</td><td>13</td><td>16</td><td>18</td><td>20</td><td>22</td><td>24</td><td>25</td></tr>
-                <tr><td>2</td><td>2</td><td>3</td><td>5</td><td>7</td><td>7</td><td>11</td><td>13</td><td>15</td><td>15</td><td>17</td><td>21</td><td>21</td><td>23</td><td>24</td></tr>
-                <tr><td>3</td><td>3</td><td>4</td><td>6</td><td>5</td><td>9</td><td>10</td><td>11</td><td>14</td><td>17</td><td>19</td><td>19</td><td>20</td><td>22</td><td>23</td></tr>
-                <tr><td>4</td><td></td><td>5</td><td>3</td><td>8</td><td>10</td><td>12</td><td>10</td><td>12</td><td>14</td><td>16</td><td>18</td><td>23</td><td>21</td><td></td></tr>
-                <tr><td>5</td><td></td><td></td><td>7</td><td>9</td><td>6</td><td>8</td><td>14</td><td>16</td><td>18</td><td>20</td><td>17</td><td>19</td><td></td><td></td></tr>
-                <tr><td>6</td><td></td><td></td><td></td><td>4</td><td>11</td><td>13</td><td>15</td><td>11</td><td>13</td><td>15</td><td>22</td><td></td><td></td><td></td></tr>
-                <tr><td>7</td><td></td><td></td><td></td><td></td><td>12</td><td>7</td><td>9</td><td>17</td><td>19</td><td>14</td><td></td><td></td><td></td><td></td></tr>
-                <tr><td>8</td><td></td><td></td><td></td><td></td><td></td><td>8</td><td>10</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-            </tbody>
+                    <tr><td>1</td><td>1</td><td>2</td><td>4</td><td>6</td><td>8</td><td>9</td><td>12</td><td>13</td><td>16</td><td>18</td><td>20</td><td>22</td><td>24</td><td>25</td></tr>
+                    <tr><td>2</td><td>2</td><td>3</td><td>5</td><td>7</td><td>7</td><td>11</td><td>13</td><td>15</td><td>15</td><td>17</td><td>21</td><td>21</td><td>23</td><td>24</td></tr>
+                    <tr><td>3</td><td>3</td><td>4</td><td>6</td><td>5</td><td>9</td><td>10</td><td>11</td><td>14</td><td>17</td><td>19</td><td>19</td><td>20</td><td>22</td><td>23</td></tr>
+                    <tr><td>4</td><td></td><td>5</td><td>3</td><td>8</td><td>10</td><td>12</td><td>10</td><td>12</td><td>14</td><td>16</td><td>18</td><td>23</td><td>21</td><td></td></tr>
+                    <tr><td>5</td><td></td><td></td><td>7</td><td>9</td><td>6</td><td>8</td><td>14</td><td>16</td><td>18</td><td>20</td><td>17</td><td>19</td><td></td><td></td></tr>
+                    <tr><td>6</td><td></td><td></td><td></td><td>4</td><td>11</td><td>13</td><td>15</td><td>11</td><td>13</td><td>15</td><td>22</td><td></td><td></td><td></td></tr>
+                    <tr><td>7</td><td></td><td></td><td></td><td></td><td>12</td><td>7</td><td>9</td><td>17</td><td>19</td><td>14</td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td>8</td><td></td><td></td><td></td><td></td><td></td><td>8</td><td>10</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                </tbody>
             </table>
         </div>
     </div>
@@ -236,9 +249,7 @@
 
         function validateCriteria(numbers) {
             const sorted = [...numbers].sort((a, b) => a - b);
-            const totalSum = sorted.reduce((a, b) => a + b, 0);
-            
-            const validation = {
+            return {
                 fixed: numbers.includes(1) && numbers.includes(25),
                 consecutives: (() => {
                     let maxConsec = 1, current = 1;
@@ -248,22 +259,11 @@
                     }
                     return maxConsec <= 4;
                 })(),
-                sum: totalSum >= 180 && totalSum <= 192,
-                parity: (() => {
-                    const evens = sorted.filter(n => n % 2 === 0).length;
-                    return evens >= 6 && evens <= 7;
-                })(),
-                primes: (() => {
-                    const primeCount = sorted.filter(n => primes.includes(n)).length;
-                    return primeCount >= 3 && primeCount <= 6;
-                })(),
-                digits: (() => {
-                    const digitCount = sorted.filter(n => singleDigit.includes(n)).length;
-                    return digitCount >= 4 && digitCount <= 6;
-                })()
+                sum: sorted.reduce((a, b) => a + b, 0) >= 180 && sorted.reduce((a, b) => a + b, 0) <= 192,
+                parity: (evens => evens >= 6 && evens <= 7)(sorted.filter(n => n % 2 === 0).length),
+                primes: (primeCount => primeCount >= 3 && primeCount <= 6)(sorted.filter(n => primes.includes(n)).length),
+                digits: (digitCount => digitCount >= 4 && digitCount <= 6)(sorted.filter(n => singleDigit.includes(n)).length)
             };
-            
-            return validation;
         }
 
         function updateValidationUI(validation) {
@@ -279,27 +279,10 @@
             let numbers;
             do {
                 numbers = new Set([1, 25]);
-                let sum = 26;
-                let safeExit = 0;
-                
-                while(numbers.size < 14 && safeExit < 10000) {
-                    const remaining = 14 - numbers.size;
-                    const neededSum = 192 - sum;
-                    const avg = neededSum / remaining;
-                    
-                    const num = Math.floor(Math.random() * (24 - 2 + 1)) + 2;
-                    
-                    if (!numbers.has(num)) {
-                        const tempSum = sum + num;
-                        if(tempSum <= 192 && (192 - tempSum) >= (remaining - 1) * 2) {
-                            numbers.add(num);
-                            sum = tempSum;
-                        }
-                    }
-                    safeExit++;
+                while(numbers.size < 14) {
+                    numbers.add(Math.floor(Math.random() * 23) + 2);
                 }
             } while(!Object.values(validateCriteria([...numbers])).every(v => v));
-            
             return [...numbers].sort((a, b) => a - b);
         }
 
@@ -308,8 +291,10 @@
                 cell.classList.remove('highlight');
             });
 
-            numbers.forEach(num => {
-                document.querySelectorAll('td').forEach(cell => {
+            numbers.forEach((num, index) => {
+                const column = index + 1;
+                const selector = `td:nth-child(${column + 1})`;
+                document.querySelectorAll(selector).forEach(cell => {
                     if(parseInt(cell.textContent) === num) {
                         cell.classList.add('highlight');
                     }
@@ -326,7 +311,6 @@
             updateValidationUI(validateCriteria(numbers));
         }
 
-        // Generar combinación inicial
         generateNewCombination();
     </script>
 </body>
