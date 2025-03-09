@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Generador Números Kino</title>
+    <title>Generador Kino Responsivo</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -20,7 +20,7 @@
             padding: 15px;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            width: 100%;
+            width: 95%;
             max-width: 1000px;
             margin: 10px;
             box-sizing: border-box;
@@ -95,14 +95,17 @@
             color: #c62828;
         }
 
+        .pattern-table-container {
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
         .pattern-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
             background: white;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            overflow-x: auto;
-            display: block;
+            min-width: 600px;
         }
 
         .pattern-table th, .pattern-table td {
@@ -173,7 +176,6 @@
         <button onclick="generateNewCombination()">Generar Combinación</button>
         <div class="numbers-grid" id="numbersGrid"></div>
 
-        <!-- Panel de validación -->
         <div class="validation-panel">
             <h2>Validación de Criterios</h2>
             <div class="validation-item" data-criterion="fixed">
@@ -202,18 +204,130 @@
             </div>
         </div>
 
-        <!-- Tabla de patrones -->
-        <h2>Patrones Estadísticos Personalizados</h2>
-        <h3>Lo ideal es que se genere una especie de "U" con los números</h3>
-        <div style="overflow-x: auto;">
+        <h2>Patrones Estadísticos</h2>
+        <h3>Distribución en forma de "U"</h3>
+        <div class="pattern-table-container">
             <table class="pattern-table">
-                <!-- Mantener misma estructura de tabla -->
+                <thead>
+                    <tr>
+                        <th>Pos.</th>
+                        <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+                        <th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+                        <th>11</th><th>12</th><th>13</th><th>14</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>1</td><td>2</td><td>4</td><td>6</td><td>8</td><td>9</td><td>12</td><td>13</td><td>16</td><td>18</td><td>20</td><td>22</td><td>24</td><td>25</td></tr>
+                    <tr><td>2</td><td>2</td><td>3</td><td>5</td><td>7</td><td>7</td><td>11</td><td>13</td><td>15</td><td>15</td><td>17</td><td>21</td><td>21</td><td>23</td><td>24</td></tr>
+                    <tr><td>3</td><td>3</td><td>4</td><td>6</td><td>5</td><td>9</td><td>10</td><td>11</td><td>14</td><td>17</td><td>19</td><td>19</td><td>20</td><td>22</td><td>23</td></tr>
+                    <tr><td>4</td><td></td><td>5</td><td>3</td><td>8</td><td>10</td><td>12</td><td>10</td><td>12</td><td>14</td><td>16</td><td>18</td><td>23</td><td>21</td><td></td></tr>
+                    <tr><td>5</td><td></td><td></td><td>7</td><td>9</td><td>6</td><td>8</td><td>14</td><td>16</td><td>18</td><td>20</td><td>17</td><td>19</td><td></td><td></td></tr>
+                    <tr><td>6</td><td></td><td></td><td></td><td>4</td><td>11</td><td>13</td><td>15</td><td>11</td><td>13</td><td>15</td><td>22</td><td></td><td></td><td></td></tr>
+                    <tr><td>7</td><td></td><td></td><td></td><td></td><td>12</td><td>7</td><td>9</td><td>17</td><td>19</td><td>14</td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td>8</td><td></td><td></td><td></td><td></td><td></td><td>8</td><td>10</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                </tbody>
             </table>
         </div>
     </div>
 
     <script>
-        // Mantener mismo código JavaScript anterior
+        const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23];
+        const singleDigit = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+        function validateCriteria(numbers) {
+            const sorted = [...numbers].sort((a, b) => a - b);
+            const totalSum = sorted.reduce((a, b) => a + b, 0);
+            
+            const validation = {
+                fixed: numbers.includes(1) && numbers.includes(25),
+                consecutives: (() => {
+                    let maxConsec = 1, current = 1;
+                    for(let i = 1; i < sorted.length; i++) {
+                        sorted[i] === sorted[i-1] + 1 ? current++ : current = 1;
+                        if(current > maxConsec) maxConsec = current;
+                    }
+                    return maxConsec <= 4;
+                })(),
+                sum: totalSum >= 180 && totalSum <= 192,
+                parity: (() => {
+                    const evens = sorted.filter(n => n % 2 === 0).length;
+                    return evens >= 6 && evens <= 7;
+                })(),
+                primes: (() => {
+                    const primeCount = sorted.filter(n => primes.includes(n)).length;
+                    return primeCount >= 3 && primeCount <= 6;
+                })(),
+                digits: (() => {
+                    const digitCount = sorted.filter(n => singleDigit.includes(n)).length;
+                    return digitCount >= 4 && digitCount <= 6;
+                })()
+            };
+            
+            return validation;
+        }
+
+        function updateValidationUI(validation) {
+            document.querySelectorAll('.validation-item').forEach(item => {
+                const criterion = item.dataset.criterion;
+                const icon = item.querySelector('.check-icon');
+                icon.textContent = validation[criterion] ? '✓' : '✕';
+                icon.className = `check-icon ${validation[criterion] ? 'valid' : 'invalid'}`;
+            });
+        }
+
+        function generateValidCombination() {
+            let numbers;
+            do {
+                numbers = new Set([1, 25]);
+                let sum = 26;
+                let safeExit = 0;
+                
+                while(numbers.size < 14 && safeExit < 10000) {
+                    const remaining = 14 - numbers.size;
+                    const neededSum = 192 - sum;
+                    const avg = neededSum / remaining;
+                    
+                    const num = Math.floor(Math.random() * (24 - 2 + 1)) + 2;
+                    
+                    if (!numbers.has(num)) {
+                        const tempSum = sum + num;
+                        if(tempSum <= 192 && (192 - tempSum) >= (remaining - 1) * 2) {
+                            numbers.add(num);
+                            sum = tempSum;
+                        }
+                    }
+                    safeExit++;
+                }
+            } while(!Object.values(validateCriteria([...numbers])).every(v => v));
+            
+            return [...numbers].sort((a, b) => a - b);
+        }
+
+        function highlightMatches(numbers) {
+            document.querySelectorAll('.highlight').forEach(cell => {
+                cell.classList.remove('highlight');
+            });
+
+            numbers.forEach(num => {
+                document.querySelectorAll('td').forEach(cell => {
+                    if(parseInt(cell.textContent) === num) {
+                        cell.classList.add('highlight');
+                    }
+                });
+            });
+        }
+
+        function generateNewCombination() {
+            const numbers = generateValidCombination();
+            document.getElementById('numbersGrid').innerHTML = numbers
+                .map(n => `<div class="number-card">${n}</div>`)
+                .join('');
+            highlightMatches(numbers);
+            updateValidationUI(validateCriteria(numbers));
+        }
+
+        // Generar combinación inicial
+        generateNewCombination();
     </script>
 </body>
 </html>
