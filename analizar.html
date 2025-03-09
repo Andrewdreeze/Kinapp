@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador Kino</title>
+    <style>
+        /* Estilos manteniendo la versión responsiva anterior */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f0f8ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 1000px;
+            margin: 20px;
+            width: 95%;
+        }
+
+        .input-section {
+            margin: 20px 0;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #4a90e2;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 1em;
+        }
+
+        .instructions {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        button {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin: 15px 0;
+            width: 100%;
+        }
+
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin: 25px 0;
+        }
+
+        .number-card {
+            background: #4a90e2;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .validation-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .validation-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .check-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .valid {
+            background: #a5d6a7;
+            color: #2e7d32;
+        }
+
+        .invalid {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .pattern-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            overflow-x: auto;
+            display: block;
+        }
+
+        .pattern-table th, .pattern-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            min-width: 35px;
+            position: relative;
+        }
+
+        .pattern-table th {
+            background: #34495e;
+            color: white;
+        }
+
+        .highlight {
+            background: #e8f5e9 !important;
+            font-weight: bold;
+        }
+
+        .highlight::after {
+            content: "✔";
+            color: #2e7d32;
+            font-size: 0.8em;
+            position: absolute;
+            right: 2px;
+            top: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .numbers-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .validation-item span {
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .numbers-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.3em;
+                text-align: center;
+            }
+            
+            input[type="text"] {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+            
+            .check-icon {
+                margin-right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Analizador de Números Kino</h1>
+        
+        <div class="input-section">
+            <div class="instructions">
+                Ingresa 14 números únicos entre 1 y 25, separados por comas:
+            </div>
+            <input type="text" id="numeroInput" placeholder="Ejemplo: 1,3,5,7,9,11,13,15,17,19,21,23,25,2">
+            <button onclick="analizarNumeros()">Analizar Números</button>
+        </div>
+
+        <div class="numbers-grid" id="numbersGrid"></div>
+
+        <div class="validation-panel">
+            <h2>Validación de Criterios</h2>
+            <div class="validation-item" data-criterion="fixed">
+                <div class="check-icon"></div>
+                <span>Incluye 1 y 25</span>
+            </div>
+            <div class="validation-item" data-criterion="consecutives">
+                <div class="check-icon"></div>
+                <span>Máximo 4 números consecutivos</span>
+            </div>
+            <div class="validation-item" data-criterion="sum">
+                <div class="check-icon"></div>
+                <span>Suma total 180-192</span>
+            </div>
+            <div class="validation-item" data-criterion="parity">
+                <div class="check-icon"></div>
+                <span>6-7 números pares</span>
+            </div>
+            <div class="validation-item" data-criterion="primes">
+                <div class="check-icon"></div>
+                <span>3-6 números primos</span>
+            </div>
+            <div class="validation-item" data-criterion="digits">
+                <div class="check-icon"></div>
+                <span>4-6 números de un dígito</span>
+            </div>
+        </div>
+
+        <h2>Patrones Estadísticos</h2>
+        <div class="pattern-table-wrapper">
+            <table class="pattern-table">
+                <thead>
+                    <tr>
+                        <th>Pos.</th>
+                        <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+                        <th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+                        <th>11</th><th>12</th><th>13</th><th>14</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>1</td><td>2</td><td>4</td><td>6</td><td>8</td><td>9</td><td>12</td><td>13</td><td>16</td><td>18</td><td>20</td><td>22</td><td>24</td><td>25</td></tr>
+                    <tr><td>2</td><td>2</td><td>3</td><td>5</td><td>7</td><td>7</td><td>11</td><td>13</td><td>15</td><td>15</td><td>17</td><td>21</td><td>21</td><td>23</td><td>24</td></tr>
+                    <tr><td>3</td><td>3</td><td>4</td><td>6</td><td>5</td><td>9</td><td>10</td><td>11</td><td>14</td><td>17</td><td>19</td><td>19</td><td>20</td><td>22</td><td>23</td></tr>
+                    <tr><td>4</td><td></td><td>5</td><td>3</td><td>8</td><td>10</td><td>12</td><td>10</td><td>12</td><td>14</td><td>16</td><td>18</td><td>23</td><td>21</td><td></td></tr>
+                    <tr><td>5</td><td></td><td></td><td>7</td><td>9</td><td>6</td><td>8</td><td>14</td><td>16</td><td>18</td><td>20</td><td>17</td><td>19</td><td></td><td></td></tr>
+                    <tr><td>6</td><td></td><td></td><td></td><td>4</td><td>11</td><td>13</td><td>15</td><td>11</td><td>13</td><td>15</td><td>22</td><td></td><td></td><td></td></tr>
+                    <tr><td>7</td><td></td><td></td><td></td><td></td><td>12</td><td>7</td><td>9</td><td>17</td><td>19</td><td>14</td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td>8</td><td></td><td></td><td></td><td></td><td></td><td>8</td><td>10</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23];
+        const singleDigit = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+        function analizarNumeros() {
+            const input = document.getElementById('numeroInput').value;
+            const numeros = input.split(',')
+                .map(n => parseInt(n.trim()))
+                .filter(n => !isNaN(n) && n >= 1 && n <= 25);
+
+            // Validación básica mejorada
+            if (numeros.length !== 14) {
+                alert('❌ Error: Debes ingresar exactamente 14 números');
+                return;
+            }
+            
+            if (new Set(numeros).size !== 14) {
+                alert('❌ Error: Los números deben ser únicos');
+                return;
+            }
+
+            mostrarResultado(numeros);
+        }
+
+        function mostrarResultado(numeros) {
+            const sorted = [...numeros].sort((a, b) => a - b);
+            
+            // Actualizar interfaz
+            document.getElementById('numbersGrid').innerHTML = sorted
+                .map(n => `<div class="number-card">${n}</div>`)
+                .join('');
+            
+            // Validar criterios
+            const validacion = validarCriterios(sorted);
+            actualizarValidacionUI(validacion);
+            resaltarCoincidencias(sorted);
+        }
+
+        function validarCriterios(numbers) {
+            const sorted = [...numbers].sort((a, b) => a - b);
+            const sumaTotal = sorted.reduce((a, b) => a + b, 0);
+            
+            // Conteo de características
+            let maxConsecutivos = 1;
+            let actualConsecutivo = 1;
+            
+            for (let i = 1; i < sorted.length; i++) {
+                if (sorted[i] === sorted[i-1] + 1) {
+                    actualConsecutivo++;
+                    if (actualConsecutivo > maxConsecutivos) {
+                        maxConsecutivos = actualConsecutivo;
+                    }
+                } else {
+                    actualConsecutivo = 1;
+                }
+            }
+
+            const pares = sorted.filter(n => n % 2 === 0).length;
+            const primos = sorted.filter(n => primes.includes(n)).length;
+            const unDigito = sorted.filter(n => singleDigit.includes(n)).length;
+
+            return {
+                fixed: numbers.includes(1) && numbers.includes(25),
+                consecutives: maxConsecutivos <= 4,
+                sum: sumaTotal >= 180 && sumaTotal <= 192,
+                parity: pares >= 6 && pares <= 7,
+                primes: primos >= 3 && primos <= 6,
+                digits: unDigito >= 4 && unDigito <= 6
+            };
+        }
+
+        function actualizarValidacionUI(validacion) {
+            document.querySelectorAll('.validation-item').forEach(item => {
+                const criterio = item.dataset.criterion;
+                const icono = item.querySelector('.check-icon');
+                const esValido = validacion[criterio];
+                
+                icono.textContent = esValido ? '✓' : '✕';
+                icono.className = `check-icon ${esValido ? 'valid' : 'invalid'}`;
+            });
+        }
+
+        function resaltarCoincidencias(numeros) {
+            // Limpiar resaltados anteriores
+            document.querySelectorAll('.highlight').forEach(celda => {
+                celda.classList.remove('highlight');
+            });
+
+            // Resaltar nuevos números (ajustado para la columna de posición)
+            numeros.forEach((num, index) => {
+                const columna = index + 2; // +1 por la columna "Pos." +1 para índice base 1
+                document.querySelectorAll(`td:nth-child(${columna})`).forEach(celda => {
+                    if (parseInt(celda.textContent) === num) {
+                        celda.classList.add('highlight');
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>
